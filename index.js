@@ -1,34 +1,45 @@
-const form = document.querySelector(".js-feedback-form")
-const textarea = form.querySelector("textarea")
-const FORM_DATA = "formdata"
-console.log(textarea);
+const form = document.querySelector(".js-feedback-form");
+const textarea = form.querySelector("textarea");
+const input = form.querySelector("input");
+const FORM_DATA = "formdata";
 
-form.addEventListener("submit", onSubmitForm)
+form.addEventListener("submit", onSubmitForm);
 
 function onSubmitForm(ev) {
-    ev.preventDefault()
-    const value = textarea.value
-    console.log(value);
-    form.reset()
-    localStorage.removeItem(FORM_DATA)
+  ev.preventDefault();
+  const textValue = textarea.value;
+  const inputValue = input.value;
+  const formData = {
+    name: inputValue,
+    message: textValue,
+  };
+  console.log(formData);
+  form.reset();
+  localStorage.removeItem(FORM_DATA);
 }
 
-textarea.addEventListener("input", onTextarea)
+form.addEventListener("input", onInputChange);
 
-function onTextarea(ev) {
-    const textArea = ev.target
-    const valueOfTextarea = textArea.value
-    console.log(typeof valueOfTextarea);
-    localStorage.setItem(FORM_DATA, valueOfTextarea)
-
+function onInputChange(ev) {
+  const formData = {
+    name: input.value,
+    message: textarea.value,
+  };
+  console.log(ev.target.name);
+  // console.log(formData.name);
+  // console.log(formData[ev.target.name]);
+  formData[ev.target.name] = ev.target.value;
+  console.log(formData);
+  localStorage.setItem(FORM_DATA, JSON.stringify(formData));
 }
 
 function populateData(params) {
-
-    const data = localStorage.getItem(FORM_DATA)
-    if(data){
-        textarea.value = data
-    }
+  const data = localStorage.getItem(FORM_DATA);
+  if (data) {
+    const parseData = JSON.parse(data);
+    textarea.value = parseData.message;
+    input.value = parseData.name;
+  }
 }
 
-populateData()
+populateData();
